@@ -8,8 +8,10 @@ import type {
   RealtimeQuote,
   Valuation,
 } from "@/lib/twse";
+import type { Financials } from "@/lib/financials";
 import IndicatorPanel from "./IndicatorPanel";
 import InstitutionalTable from "./InstitutionalTable";
+import FinancialsPanel from "./FinancialsPanel";
 
 // lightweight-charts 只能在瀏覽器執行,關閉 SSR
 const CandleChart = dynamic(() => import("./CandleChart"), { ssr: false });
@@ -45,6 +47,7 @@ export default function StockView({ stockNo }: { stockNo: string }) {
   const [quote, setQuote] = useState<QuoteResp | null>(null);
   const [inst, setInst] = useState<InstitutionalRow[]>([]);
   const [valuation, setValuation] = useState<Valuation | null>(null);
+  const [financials, setFinancials] = useState<Financials | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,6 +74,11 @@ export default function StockView({ stockNo }: { stockNo: string }) {
     fetch(`/api/valuation/${stockNo}`)
       .then((r) => r.json())
       .then((d) => !cancelled && setValuation(d.valuation ?? null))
+      .catch(() => {});
+
+    fetch(`/api/financials/${stockNo}`)
+      .then((r) => r.json())
+      .then((d) => !cancelled && setFinancials(d.financials ?? null))
       .catch(() => {});
 
     return () => {
@@ -150,6 +158,10 @@ export default function StockView({ stockNo }: { stockNo: string }) {
           </Card>
         </>
       )}
+
+      <Card title="財報 / 基本面(月營收 · EPS)">
+        <FinancialsPanel data={financials} />
+      </Card>
 
       <Card title="三大法人買賣超(近 20 個交易日)">
         <InstitutionalTable rows={inst} />
