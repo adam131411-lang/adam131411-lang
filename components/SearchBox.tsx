@@ -10,6 +10,7 @@ const POPULAR = [
   { no: "2412", name: "中華電" },
   { no: "0050", name: "元大台灣50" },
   { no: "2891", name: "中信金" },
+  { no: "6488", name: "環球晶(櫃)" },
 ];
 
 export default function SearchBox() {

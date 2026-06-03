@@ -115,9 +115,16 @@ export async function getDailyCandles(
   }
   // 去重 + 依日期排序
   const seen = new Set<string>();
-  return candles
+  const merged = candles
     .filter((c) => (seen.has(c.date) ? false : seen.add(c.date)))
     .sort((a, b) => a.date.localeCompare(b.date));
+
+  // 上市(TWSE)查無資料 → 可能是上櫃股票,fallback 至 TPEX
+  if (merged.length === 0) {
+    const { getTpexDailyCandles } = await import("./tpex");
+    return getTpexDailyCandles(stockNo, months).catch(() => []);
+  }
+  return merged;
 }
 
 export type InstitutionalRow = {
@@ -176,6 +183,11 @@ export async function getInstitutional(
     });
   });
 
+  // 上市(TWSE)查無資料 → 可能是上櫃股票,fallback 至 TPEX
+  if (rows.length === 0) {
+    const { getTpexInstitutional } = await import("./tpex");
+    return getTpexInstitutional(stockNo, days).catch(() => []);
+  }
   return rows.sort((a, b) => a.date.localeCompare(b.date)).slice(-days);
 }
 
