@@ -12,6 +12,7 @@ import type { Financials } from "@/lib/financials";
 import IndicatorPanel from "./IndicatorPanel";
 import InstitutionalTable from "./InstitutionalTable";
 import FinancialsPanel from "./FinancialsPanel";
+import AnalysisPanel from "./AnalysisPanel";
 
 // lightweight-charts 只能在瀏覽器執行,關閉 SSR
 const CandleChart = dynamic(() => import("./CandleChart"), { ssr: false });
@@ -158,6 +159,10 @@ export default function StockView({ stockNo }: { stockNo: string }) {
           </Card>
         </>
       )}
+
+      <Card title="🤖 AI 深度分析">
+        <AnalysisPanel stockNo={stockNo} name={rt?.name} />
+      </Card>
 
       <Card title="財報 / 基本面(月營收 · EPS)">
         <FinancialsPanel data={financials} />

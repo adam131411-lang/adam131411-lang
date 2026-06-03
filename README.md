@@ -10,6 +10,22 @@
 - 📈 **技術指標**:MA5/20/60、KD、RSI、MACD
 - 🏦 **三大法人買賣超**:外資、投信、自營商(近 20 個交易日)
 - 💰 **基本面快照**:本益比、殖利率、股價淨值比
+- 📑 **財報**:月營收(MoM/YoY)、EPS、毛利、淨利(證交所 OpenAPI)
+- 🏢 **上市 + 上櫃**:TWSE 查無資料時自動 fallback 到 TPEX
+- 🤖 **AI 深度分析**:以 Claude(`stock-deepdive-tw` skill)即時搜尋後產生分析(需 API key)
+
+## AI 深度分析(選用)
+
+個股頁的「🤖 AI 深度分析」會呼叫 **Claude API**,把 `.claude/skills/stock-deepdive-tw`
+當作 system prompt,並啟用 **web search** 即時查當前財報與股價,串流回傳結構化分析
+(財務體質、估值、成長、多空、決策框架)。
+
+啟用方式:複製 `.env.example` 為 `.env.local`,填入 `ANTHROPIC_API_KEY`。
+未設定金鑰時,網站其他功能照常運作,只有這顆按鈕會提示需設定金鑰。
+
+- 模型:預設 `claude-opus-4-8`(可用環境變數 `ANALYSIS_MODEL` 覆寫)
+- 採 adaptive thinking + 串流輸出 + system prompt 快取
+- 實作:`lib/anthropic.ts`、`app/api/analyze/[id]`、`components/AnalysisPanel.tsx`
 
 ## 技術架構
 
