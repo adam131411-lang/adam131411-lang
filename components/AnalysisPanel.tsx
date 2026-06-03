@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 /**
  * AI 深度分析面板:點擊後串流呼叫 /api/analyze,即時顯示 Claude 產生的分析。
@@ -81,9 +83,13 @@ export default function AnalysisPanel({
       </div>
 
       {text && (
-        <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-200 whitespace-pre-wrap">
-          {text}
-          {status === "loading" && <span className="animate-pulse">▍</span>}
+        <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
+          <div className="prose prose-invert prose-sm max-w-none prose-headings:text-slate-100 prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-5 prose-h3:text-sm prose-strong:text-white prose-table:text-xs prose-th:text-slate-300 prose-a:text-sky-400 prose-li:my-0.5">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+          </div>
+          {status === "loading" && (
+            <span className="animate-pulse text-violet-400">▍</span>
+          )}
         </div>
       )}
 
