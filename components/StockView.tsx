@@ -17,6 +17,10 @@ import AnalysisPanel from "./AnalysisPanel";
 // lightweight-charts 只能在瀏覽器執行,關閉 SSR
 const CandleChart = dynamic(() => import("./CandleChart"), { ssr: false });
 
+// AI 深度分析預設「關閉」(會用到付費的 Claude API)。
+// 要啟用:在 .env.local 設 NEXT_PUBLIC_ENABLE_AI_ANALYSIS=true 並設好 ANTHROPIC_API_KEY。
+const AI_ENABLED = process.env.NEXT_PUBLIC_ENABLE_AI_ANALYSIS === "true";
+
 type QuoteResp = {
   stockNo: string;
   realtime: RealtimeQuote | null;
@@ -160,9 +164,11 @@ export default function StockView({ stockNo }: { stockNo: string }) {
         </>
       )}
 
-      <Card title="🤖 AI 深度分析">
-        <AnalysisPanel stockNo={stockNo} name={rt?.name} />
-      </Card>
+      {AI_ENABLED && (
+        <Card title="🤖 AI 深度分析">
+          <AnalysisPanel stockNo={stockNo} name={rt?.name} />
+        </Card>
+      )}
 
       <Card title="財報 / 基本面(月營收 · EPS)">
         <FinancialsPanel data={financials} />
